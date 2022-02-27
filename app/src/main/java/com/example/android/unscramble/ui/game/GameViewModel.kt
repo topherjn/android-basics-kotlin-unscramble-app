@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 class GameViewModel : ViewModel() {
 
     private var wordsList: MutableList<String> = mutableListOf()
-    private lateinit var currentWord: String
+    private lateinit var _currentWord: String
+    val currentWord: String
+        get() = _currentWord
 
     private var _score = 0
     val score: Int
@@ -34,20 +36,20 @@ class GameViewModel : ViewModel() {
 * Updates currentWord and currentScrambledWord with the next word.
 */
     private fun getNextWord() {
-        currentWord = allWordsList.random()
-        val tempWord = currentWord.toCharArray()
+        _currentWord = allWordsList.random()
+        val tempWord = _currentWord.toCharArray()
         tempWord.shuffle()
 
-        while (String(tempWord).equals(currentWord, false)) {
+        while (String(tempWord).equals(_currentWord, false)) {
             tempWord.shuffle()
         }
 
-        if (wordsList.contains(currentWord)) {
+        if (wordsList.contains(_currentWord)) {
             getNextWord()
         } else {
             _currentScrambledWord = String(tempWord)
             ++_currentWordCount
-            wordsList.add(currentWord)
+            wordsList.add(_currentWord)
         }
     }
 
@@ -67,7 +69,7 @@ class GameViewModel : ViewModel() {
     }
 
     fun isUserWordCorrect(playerWord: String): Boolean {
-        if (playerWord.equals(currentWord, true)) {
+        if (playerWord.equals(_currentWord, true)) {
             increaseScore()
             return true
         }
